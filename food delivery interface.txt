@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Foodie — Food Delivery</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#ff6b35; --glass: rgba(255,255,255,0.04);
+      --max-width:1200px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#e6eef6;background:linear-gradient(180deg,#071021 0%, #071526 100%);-webkit-font-smoothing:antialiased}
+    .container{max-width:var(--max-width);margin:28px auto;padding:0 16px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#f09a3e);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{font-size:18px;margin:0}
+    .searchbar{flex:1;margin:0 18px}
+    .searchbar input{width:100%;padding:12px 14px;border-radius:12px;border:0;background:var(--glass);color:inherit;outline:2px solid transparent}
+    .actions{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;border:0;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* layout */
+    .main{display:grid;grid-template-columns:280px 1fr 360px;gap:20px}
+    @media (max-width:1000px){.main{grid-template-columns:1fr;}.cart-panel{order:3}}
+
+    /* sidebar */
+    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:16px;border-radius:14px}
+    .profile{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+    .avatar{width:56px;height:56px;border-radius:10px;background:#192735;display:flex;align-items:center;justify-content:center;color:#9cc9ff}
+    .filters{display:flex;flex-direction:column;gap:10px}
+    .chip{padding:8px 10px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+
+    /* restaurants & cards */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:12px;border-radius:12px;position:relative;overflow:hidden}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+    .card h3{margin:10px 0 6px;font-size:16px}
+    .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+    .foods{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .food-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01)}
+    .food-item .price{font-weight:600}
+    .add{padding:6px 8px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+
+    /* cart */
+    .cart-panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:16px;border-radius:14px;height:fit-content;position:sticky;top:24px}
+    .cart-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .cart-row{display:flex;justify-content:space-between;align-items:center}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty button{width:28px;height:28px;border-radius:6px;border:0;background:rgba(255,255,255,0.03);cursor:pointer}
+    .checkout{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#ff8b5a);color:#fff;border:0;width:100%;font-weight:700}
+
+    /* footer */
+    footer{margin-top:28px;color:var(--muted);text-align:center}
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .price-tag{background:rgba(0,0,0,0.25);padding:6px;border-radius:8px}
+    .empty{padding:28px;border-radius:12px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand"><div class="logo">FD</div><div><h1>Foodie — Order your favorites</h1><div class="muted" style="font-size:13px">Fast delivery — Best restaurants</div></div></div>
+      <div class="searchbar"><input id="search" placeholder="Search dishes, restaurants or cuisines..." /></div>
+      <div class="actions">
+        <button class="btn secondary" id="locBtn">Deliver to: Home</button>
+        <button class="btn" id="openCartBtn">Cart (<span id="cartCount">0</span>)</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar">
+        <div class="profile"><div class="avatar">S</div><div><div style="font-weight:700">Hello, Sumukha</div><div class="muted" style="font-size:13px">Delivering to: 221B, Baker St</div></div></div>
+        <div style="margin-top:10px;font-weight:700">Categories</div>
+        <div class="filters">
+          <div class="chip" data-cat="all">All</div>
+          <div class="chip" data-cat="pizza">Pizza</div>
+          <div class="chip" data-cat="sushi">Sushi</div>
+          <div class="chip" data-cat="burger">Burgers</div>
+          <div class="chip" data-cat="dessert">Desserts</div>
+        </div>
+        <div style="margin-top:18px"><div style="font-weight:700">Filter by</div>
+          <div style="display:flex;gap:8px;margin-top:8px"><button class="chip" id="fast">Fast</button><button class="chip" id="top">Top Rated</button></div>
+        </div>
+      </aside>
+
+      <main>
+        <section style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
+          <div><h2 style="margin:0">Popular near you</h2><div class="muted" style="font-size:13px">Based on ratings and delivery time</div></div>
+          <div class="muted">Sort: <select id="sort"><option value="rating">Top Rated</option><option value="time">Fastest</option><option value="price">Price</option></select></div>
+        </section>
+
+        <section class="grid" id="restaurantGrid">
+          <!-- generated cards -->
+        </section>
+
+      </main>
+
+      <aside class="cart-panel" id="cartPanel">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:800">Your cart</div><div class="muted">Est. delivery: 25-35 min</div></div
